@@ -31,26 +31,32 @@ public class Robot extends TimedRobot {
   private VictorSP intake = new VictorSP(4);
   private VictorSP launcher = new VictorSP(5);
 
+  //Controllers
   private Joystick stick;
   private LogitechGamepadController gamepad;
 
+  //SendableChooser for Drive controller
   private static final String kFlightStickDrive = "Flight Stick Drive";
   private static final String kGamePadArcadeDrive = "Game Pad Arcade Drive";
   private static final String kGamePadTankDrive = "Game Pad Tank Drive";
   private static final String kGamePadStickDrive = "Game Pad Stick Drive";
-
   private String m_DriveSelected;
   private final SendableChooser<String> driveChooser = new SendableChooser<>();
 
+  //SendableChooser for Operate controller
+  private static final String kFlightStickOperate = "Flight Stick Operate";
+  private static final String kGamePadOperate = "Game Pad Operate";
+  private String m_OperateSelected;
+  private final SendableChooser<String> operateChooser = new SendableChooser<>();
+
+  //SendableChooser for Side preference
   private static final String kLeftPreference = "Left";
   private static final String kRightPreference = "Right";
-
   private String m_SidePreference;
   private final SendableChooser<String> SideChooser = new SendableChooser<>();
 
   private double rotateMultiplier = 0.6;
   private double speedMultiplier = 0.85;
-
 
   @Override
   public void robotInit() {
@@ -68,10 +74,13 @@ public class Robot extends TimedRobot {
     driveChooser.addOption(kGamePadStickDrive, kGamePadStickDrive);
     SmartDashboard.putData("Drive Choice", driveChooser);
 
+    operateChooser.setDefaultOption(kFlightStickOperate, kFlightStickOperate);
+    operateChooser.addOption(kGamePadOperate, kGamePadOperate);
+    SmartDashboard.putData("Operate Choice", operateChooser);
+
     SideChooser.addOption(kLeftPreference, kLeftPreference);
     SideChooser.setDefaultOption(kRightPreference, kRightPreference);
     SmartDashboard.putData("Side Choice", SideChooser);
-
 
     SmartDashboard.putNumber("speed multiplier", speedMultiplier);
     SmartDashboard.putNumber("rotate multiplier", rotateMultiplier);
@@ -87,9 +96,11 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_DriveSelected = driveChooser.getSelected();
+    m_OperateSelected = operateChooser.getSelected();
     m_SidePreference = SideChooser.getSelected();
 
-    if (m_DriveSelected == kFlightStickDrive){
+    //Operate
+    if (m_OperateSelected == kFlightStickOperate){
       if (stick.getRawButton(2)){
         intake.set(-0.9);
       } else {
@@ -120,7 +131,7 @@ public class Robot extends TimedRobot {
 
     }
 
-    //drive
+    //Drive
     switch (m_DriveSelected) {
       case kFlightStickDrive:
         if (m_SidePreference == kLeftPreference) {
