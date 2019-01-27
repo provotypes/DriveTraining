@@ -174,7 +174,7 @@ public class Robot extends TimedRobot {
     // double outRotation = rotation * speed * rotateMultiplier;
     double outRotation = rotation * rotateMultiplier;
 
-    drivetrain.arcadeDrive(outSpeed, rotation, true);
+    drivetrain.arcadeDrive(outSpeed, outRotation, true);
   }
 
   private void tank(double left, double right) {
